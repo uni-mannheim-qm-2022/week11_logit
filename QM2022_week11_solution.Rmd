@@ -1,10 +1,10 @@
 ---
-title: "QM 2021 Week 11: Logit and Probit Models"
+title: "QM 2022 Week 11: Logit and Probit Models"
 author:
   - "Oliver Rittmann"
-  - "Viktoriia Semenova"
-  - "David Grundmanns"
-date: "November 18 | 22 | 23, 2021"
+  - "Domantas Undzėnas"
+  - "Lion Behrens"
+date: "November 16 | 17 | 18, 2022"
 output:
   html_document:
     toc: yes
@@ -111,7 +111,7 @@ beta0 <- 0.25
 beta1 <- -0.8
 
 # Randomly draw an Independent Variable
-set.seed(2021)
+set.seed(2022)
 X <- rnorm(n, 0, 1)
 ```
 
@@ -414,16 +414,7 @@ $$\hat\pi_i = \text{Pr}(y_i = 1) = \dfrac{\exp(X_i\hat\beta)}{1 + \exp(X_i\hat\b
 ```{r logit-13-1}
 head(l_response(coef(m0)[1] + coef(m0)[2] * X))
 ```
-$$1 - \hat\pi_i = \text{Pr}(y_i = 0) = 1 - \dfrac{\exp(X_i\hat\beta)}{1 + \exp(X_i\hat\beta)} = 1 - \dfrac{\exp(0.24 -0.88\cdot x_i)}{1 + \exp(0.24 -0.88\cdot x_i)}$$
-```{r logit-13-2}
-head(1 - l_response(coef(m0)[1] + coef(m0)[2] * X))
-```
 
-These values together will sum to 1:
-
-```{r logit-13-3}
-head(l_response(coef(m0)[1] + coef(m0)[2] * X) + (1 - l_response(coef(m0)[1] + coef(m0)[2] * X)))
-```
 
 ---
 
@@ -437,16 +428,6 @@ head(pnorm(coef(m0_probit)[1] + coef(m0_probit)[2] * X))
 ```
 
 $$1 - \hat\pi_i = \text{Pr}(y_i = 0) = 1 - \Phi(X_i\hat\beta) = 1 - \Phi(0.15 - 0.53 \cdot x_i)$$
-```{r probit-13-2}
-head(1 - pnorm(coef(m0_probit)[1] + coef(m0_probit)[2] * X))
-```
-
-These values together will sum to 1:
-
-```{r probit-13-3}
-head(pnorm(coef(m0_probit)[1] + coef(m0_probit)[2] * X) + (1 - pnorm(coef(m0_probit)[1] + coef(m0_probit)[2] * X)))
-```
-
 
 # Quantities of Interest
 
@@ -670,7 +651,6 @@ Construction of the separation plot begins by simply rearranging the observation
 
 > A model with no predictive power-i.e., one whose outcomes can be approximated by a random coin toss—would generate an even distribution of 0s and 1s along the column on the right-hand side. On the other hand, a model with perfect predictive power would produce a complete separation of the 0s and 1s in the right-hand column: low fitted values would always turn out to be associated with actual instances of peace (0s), whereas high fitted values would always be associated with actual instances of war (1s).
 
-A perfect model would show complete separation of the dark and light‐colored rows like this:
 
 ![](https://onlinelibrary.wiley.com/cms/asset/86e0b213-3db1-4382-882e-472be6bd773c/ajps_525_f6.gif)
 
@@ -835,26 +815,26 @@ Now, you can follow exactly the same steps as above:
 3.  Set up a multivariate normal distribution `N(beta_hat, V_hat)`.
 4.  Draw from the distribution `nsim` times.
 
-```{r logit-31, eval = T}
+```{r logit-31, eval = F}
 beta_hat <- coef(m_fearon1)
 V_hat <- vcov(m_fearon1)
 
 library(MASS)
-S <- mvrnorm(nsim, beta_hat, V_hat)
+S <- mvrnorm(nsim, beta_hat, V_hat) 
 ```
 
 ### Calculate Expected Values {.unnumbered}
 
 Let's use the scenario from above.
 
-```{r logit-32, eval = T}
+```{r logit-32, eval = F}
 Xbeta <- S %*% t(scenario)
 
 ```
 
 To get expected values for p, we need to plug in the `Xbeta` values into the response function to get simulated probabilities.
 
-```{r logit-33, eval = T}
+```{r logit-33, eval = F}
 p_sim <- l_response(Xbeta)
 ```
 
@@ -862,7 +842,7 @@ Pro Question: **How could we include fundamental uncertainty?**
 
 Now we also want means and quantiles:
 
-```{r logit-34, eval = T}
+```{r logit-34, eval = F}
 p_mean <- apply(p_sim, 2, mean)
 p_qu <- t(apply(p_sim, 2, quantile, prob = c(0.025, 0.975)))
 ```
@@ -871,8 +851,7 @@ p_qu <- t(apply(p_sim, 2, quantile, prob = c(0.025, 0.975)))
 
 This time we instantly plot a polygon and include ticks for actual x-values of our observations:
 
-```{r logit-35, eval = T}
-# start with an empty plot
+```{r logit-35, eval = F}
 plot(x = log_mountain_range, 
      y = p_mean, 
      type = "n",
@@ -916,7 +895,7 @@ axis(1,
 
 Of course you could (and should!) also unlog the mountains...
 
-```{r logit-36, eval = T}
+```{r logit-36, eval=FALSE}
 # start with an empty plot
 plot(x = exp(log_mountain_range), 
      y = p_mean, 

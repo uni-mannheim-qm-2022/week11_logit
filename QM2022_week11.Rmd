@@ -852,7 +852,39 @@ p_qu <-
 This time we instantly plot a polygon and include ticks for actual x-values of our observations:
 
 ```{r logit-35, eval = F}
+plot(x = log_mountain_range, 
+     y = p_mean, 
+     type = "n",
+     ylim = c(0, 0.045),
+     ylab = "Probability of Civil War onset",
+     xlab = "Log of Mountainous Terrain in %",
+     bty = "n",
+     las = 1)
 
+# draw polygon
+polygon(x = c(rev(log_mountain_range), log_mountain_range), 
+        y = c(rev(p_qu[,2]), p_qu[,1]),
+        col = viridis(1, 0.4),
+        border = NA)
+
+# add lines
+lines(x = log_mountain_range, 
+      y = p_mean, lwd = 2)
+lines(x = log_mountain_range, 
+      y = p_qu[, 1], 
+      lty = "dashed", 
+      col = viridis(1))
+lines(x = log_mountain_range, 
+      y = p_qu[, 2], 
+      lty = "dashed", 
+      col = viridis(1))
+
+# Adding ticks of actual x-values.
+axis(1, 
+     at = df$log_mountain,
+     col.ticks = viridis(1),
+     labels = FALSE, 
+     tck = 0.02) 
 ```
 
 > *What can we learn from this plot?*
